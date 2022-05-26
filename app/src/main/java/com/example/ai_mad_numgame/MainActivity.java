@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         int[][]dataFrame=dataPrep(); //dataPrep function returns a two-dimenssional array
         double slope=LR.getSlope(dataFrame); //LR class, which provides slope on invoking getSlope
         new AlertDialog.Builder(this)
-               // .setIcon() //your custom icon
+                // .setIcon() //your custom icon
                 .setTitle("Performance")
 
                 .setMessage(getInterpretation(dataFrame,slope))
@@ -72,12 +72,55 @@ public class MainActivity extends AppCompatActivity {
     public void newMatch() {  //A game is composed of three matches
 
         int operand1 = random.nextInt(10);
-        int operand2=0;
+        int operand2= random.nextInt(10);
+        correctButton = random.nextInt(4);
+        int correct_answer = -100;
+
+
         //check is operand2 is not zero; otherwise in case of division-divide by zero error will come
         String operator = operators[random.nextInt(4)];
         textView2.setText(operand1 + operator + operand2);
+        if(operator.equals("+"))
+            correct_answer=operand1+operand2;
+        else if(operator.equals("-"))
+            correct_answer=operand1-operand2;
+        else if(operator.equals("*"))
+            correct_answer=operand1*operand2;
+        else
+            correct_answer=operand1/operand2;
 
-      // Your code here, to diplay correct and incorrect options on the buttons
+        if(correctButton == 0)
+        {
+            button1.setText(correct_answer + " ");
+            button2.setText(correct_answer + 1 + " ");
+            button3.setText(correct_answer + 2 + " ");
+            button4.setText(correct_answer + 3 + " ");
+
+        }
+        else if(correctButton == 1)
+        {
+            button1.setText(correct_answer + 1 + " ");
+            button2.setText(correct_answer + " ");
+            button3.setText(correct_answer + 2 + " ");
+            button4.setText(correct_answer + 3 + " ");
+        }
+        else if(correctButton == 2)
+        {
+            button1.setText(correct_answer + 1 + " ");
+            button2.setText(correct_answer + 2 + " ");
+            button3.setText(correct_answer + " ");
+            button4.setText(correct_answer + 3 + " ");
+        }
+        else if(correctButton == 3)
+        {
+            button1.setText(correct_answer + 1 + " ");
+            button2.setText(correct_answer + 2 + " ");
+            button3.setText(correct_answer + 3 + " ");
+            button4.setText(correct_answer + " ");
+        }
+
+
+        // Your code here, to diplay correct and incorrect options on the buttons
 
         if(matchCounter==3){    // if three matches are completed updatee the perfomrance in sharedpreferences
 
@@ -95,14 +138,17 @@ public class MainActivity extends AppCompatActivity {
     public int sumOfScore(){
         //Computing the sum of score array, which has the 1 or in each index,depending on correct or incorrect answers
         int sum=0;
-       // your code here
+        // your code here
+        for(int i=0;i<3;i++) {
+            sum = sum + score[i];
+        }
         return sum;
     }
 
     public int[][] dataPrep() {
         int[] data = new Gson().fromJson((sharedPreferences.getString("data", null)), performance.getClass());
         Log.i("data", Arrays.toString(data)); //this is how you display arrays in Logcat, for debugging
-        int dataFrame[][] = new int[6][2]; //creating a dataframe of two columns and six rows for regresson purpose
+        int dataFrame[][] = new int[6][2]; //creating a dataframe of two columns and six rows for regression purpose
         if(data==null)
             return null;
         for (int i = 0; i < data.length; i++) {
@@ -113,8 +159,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getInterpretation(int [][]dataFrame,double slope){
-       //provide interpretation based on your slope analysis
+        //provide interpretation based on your slope analysis
         // Your code here
+        if(slope<0)
+            return "No learning";
+        else if(slope >= 0.5 & slope==0)
+            return "Slow Learning";
+        else if(slope>0.5)
+            return "Great learning";
         return "Your Interpretation";
     }
 }
